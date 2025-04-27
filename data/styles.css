@@ -1,0 +1,569 @@
+:root {
+    --primary: #3b82f6;
+    /* Changed to a nice blue color */
+    --primary-glow: rgba(59, 130, 246, 0.5);
+    --primary-light: #60a5fa;
+    /* Lighter blue */
+    --dark: #0f172a;
+    --light: #f8fafc;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --toggle-width: 65px;
+    --toggle-height: 32px;
+    --accent: #10b981;
+    --accent-light: rgba(16, 185, 129, 0.2);
+    --led-color: #fbbf24;
+    --led-glow: rgba(251, 191, 36, 0.8);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at top left, #0f172a 0%, #1e293b 100%);
+    overflow: hidden;
+    perspective: 1000px;
+}
+
+.particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+.particles.active {
+    opacity: 1;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--primary-light);
+    box-shadow: 0 0 10px 2px var(--primary-glow);
+    pointer-events: none;
+}
+
+.container {
+    position: relative;
+    width: 380px;
+    background: linear-gradient(145deg, #2c3e50, #1a2a38);
+    border-radius: 24px;
+    padding: 40px 30px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: rotateX(10deg) rotateY(0);
+    z-index: 1;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.container:hover {
+    transform: rotateX(0) rotateY(0);
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 2px;
+    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.1), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.active .container {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 0 30px 5px var(--primary-glow),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.led-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 35px;
+    position: relative;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    text-align: center;
+    color: var(--light);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.title::after {
+    content: "";
+    position: absolute;
+    width: 40px;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px var(--primary-glow);
+    transition: width 0.3s ease;
+}
+
+.active .title::after {
+    width: 80px;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-light);
+}
+
+.led-display {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.led-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.5s ease;
+}
+
+.active .led-ring {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 25px var(--primary-glow),
+        inset 0 0 20px var(--primary-glow);
+    animation: pulseRing 2s infinite;
+}
+
+@keyframes pulseRing {
+    0% {
+        box-shadow: 0 0 15px var(--primary-glow),
+            inset 0 0 10px var(--primary-glow);
+    }
+
+    50% {
+        box-shadow: 0 0 25px var(--primary-glow),
+            inset 0 0 20px var(--primary-glow);
+    }
+
+    100% {
+        box-shadow: 0 0 15px var(--primary-glow),
+            inset 0 0 10px var(--primary-glow);
+    }
+}
+
+.led-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #2a3b4d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3),
+        inset 0 5px 10px rgba(0, 0, 0, 0.5),
+        inset 0 -5px 10px rgba(255, 255, 255, 0.1);
+    transition: all 0.5s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.led-icon::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    z-index: 0;
+    background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.5) 100%);
+    opacity: 0.4;
+}
+
+.led-icon svg {
+    width: 60px;
+    height: 60px;
+    transition: all 0.5s ease;
+    color: #64748b;
+    z-index: 2;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.active .led-icon {
+    background: linear-gradient(145deg, #3b6fc9, #2d58a1);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3),
+        inset 0 5px 15px rgba(255, 255, 255, 0.3),
+        inset 0 -5px 15px rgba(0, 0, 0, 0.3),
+        0 0 30px var(--primary-glow);
+    transform: scale(1.05);
+}
+
+.active .led-icon svg {
+    color: #ffffff;
+    filter: drop-shadow(0 0 10px var(--primary-glow));
+    animation: pulse 2s infinite;
+    transform: rotate(180deg);
+}
+
+@keyframes pulse {
+    0% {
+        filter: drop-shadow(0 0 5px var(--primary-glow));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 20px var(--primary-glow));
+    }
+
+    100% {
+        filter: drop-shadow(0 0 5px var(--primary-glow));
+    }
+}
+
+/* Removed the rays effect by setting display: none */
+.led-rays {
+    display: none;
+}
+
+.ray {
+    display: none;
+}
+
+.toggle-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.toggle-label {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--light);
+    transition: color 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.toggle {
+    position: relative;
+    width: var(--toggle-width);
+    height: var(--toggle-height);
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: 0.4s;
+    border-radius: var(--toggle-height);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    overflow: hidden;
+}
+
+.slider::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--toggle-height);
+    padding: 1px;
+    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.2), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: calc(var(--toggle-height) - 8px);
+    width: calc(var(--toggle-height) - 8px);
+    left: 4px;
+    bottom: 4px;
+    background: #fff;
+    transition: 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+input:checked+.slider {
+    background-color: var(--primary-glow);
+}
+
+input:checked+.slider:before {
+    transform: translateX(calc(var(--toggle-width) - var(--toggle-height)));
+    background-color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.brightness-control {
+    width: 100%;
+    margin-top: 15px;
+    opacity: 0.6;
+    transition: opacity 0.4s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.brightness-control.active {
+    opacity: 1;
+}
+
+.brightness-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.brightness-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--primary-light);
+    transition: all 0.3s ease;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 5px 12px;
+    border-radius: 12px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.active .brightness-value {
+    color: var(--primary);
+    background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px var(--primary-glow),
+        inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.range-container {
+    width: 100%;
+    position: relative;
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    outline: none;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+}
+
+.range:hover {
+    opacity: 1;
+    height: 10px;
+}
+
+.range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.range::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    z-index: 2;
+}
+
+.active .range::-webkit-slider-thumb {
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+    transform: scale(1.1);
+}
+
+.active .range::-moz-range-thumb {
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+    transform: scale(1.1);
+}
+
+.range-progress {
+    position: absolute;
+    height: 8px;
+    border-radius: 8px;
+    background: linear-gradient(to right, var(--primary), var(--primary-light));
+    top: 11px;
+    left: 0;
+    pointer-events: none;
+    transition: width 0.3s ease, background 0.3s ease, height 0.3s ease;
+    z-index: 1;
+}
+
+.range:hover~.range-progress {
+    height: 10px;
+    top: 10px;
+}
+
+.active .range-progress {
+    background: linear-gradient(to right, var(--primary), var(--primary-light));
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.status-label {
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(0, 0, 0, 0.4);
+    color: var(--light);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+}
+
+.icon-power {
+    width: 14px;
+    height: 14px;
+}
+
+.status-label.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.status-label.on {
+    background: rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-label.off {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(5deg);
+    }
+
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+}
+
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Make the UI responsive */
+@media (max-width: 480px) {
+    .container {
+        width: 90%;
+        padding: 30px 20px;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .led-display {
+        width: 140px;
+        height: 140px;
+    }
+
+    .led-icon {
+        width: 100px;
+        height: 100px;
+    }
+
+    .led-icon svg {
+        width: 50px;
+        height: 50px;
+    }
+
+    .toggle-label {
+        font-size: 16px;
+    }
+
+    .brightness-value {
+        font-size: 16px;
+    }
+}
