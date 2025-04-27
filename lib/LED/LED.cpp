@@ -62,11 +62,27 @@ void handleJsonPost(AsyncWebServerRequest *request, JsonVariant &json)
     request->send(200, "application/json", "{\"success\":true}");
 }
 
+void handleLEDStatus(AsyncWebServerRequest *request)
+{
+    // Create JSON response with current LED state
+    String response;
+    StaticJsonDocument<128> doc;
+
+    doc["state"] = ledState;
+    doc["brightness"] = brightness;
+
+    serializeJson(doc, response);
+    request->send(200, "application/json", response);
+}
+
 void setupLEDControl()
 {
     // Add JSON handler for LED control
     AsyncCallbackJsonWebHandler *handler = new AsyncCallbackJsonWebHandler("/submit", handleJsonPost);
     server.addHandler(handler);
+
+    // Add status endpoint
+    server.on("/status", HTTP_GET, handleLEDStatus);
 }
 
 void loadLEDSettings()

@@ -17,6 +17,7 @@
 void setupLED();
 void updateLED();
 void handleJsonPost(AsyncWebServerRequest *request, JsonVariant &json);
+void handleLEDStatus(AsyncWebServerRequest *request);
 void setupLEDControl();
 void loadLEDSettings();
 

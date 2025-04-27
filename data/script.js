@@ -56,23 +56,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, delay * 1000);
     }
 
-    // 3D Hover effect
-    // document.addEventListener('mousemove', function (e) {
-    //     if (!ledToggle.checked) return;
-
-    //     const containerRect = container.getBoundingClientRect();
-    //     const containerCenterX = containerRect.left + containerRect.width / 2;
-    //     const containerCenterY = containerRect.top + containerRect.height / 2;
-
-    //     const mouseX = e.clientX;
-    //     const mouseY = e.clientY;
-
-    //     const angleX = (mouseY - containerCenterY) / (containerRect.height / 2) * 10;
-    //     const angleY = (containerCenterX - mouseX) / (containerRect.width / 2) * 10;
-
-    //     container.style.transform = `rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-    // });
-
     // Reset transform when mouse leaves
     container.addEventListener('mouseleave', function () {
         container.style.transform = 'rotateX(10deg) rotateY(0)';
@@ -107,11 +90,19 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => {
             statusLabel.classList.remove('show');
         }, 2000);
+
+        // Send update to ESP32
+        sendUpdateToESP();
     });
 
     // Update brightness
     brightnessSlider.addEventListener('input', function () {
         updateBrightness(this.value, ledToggle.checked);
+    });
+
+    // Send actual update to ESP32 when slider is released
+    brightnessSlider.addEventListener('change', function () {
+        sendUpdateToESP();
     });
 
     function updateBrightness(value, isOn) {
@@ -134,6 +125,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Update particle speed based on brightness
         document.documentElement.style.setProperty('--particle-speed', `${5 - (brightness * 3)}s`);
+    }
+
+    // Function to send updates to ESP32
+    function sendUpdateToESP() {
+        const state = {
+            state: ledToggle.checked,
+            brightness: parseInt(brightnessSlider.value)
+        };
+
+        fetch('/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(state)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error updating LED:', error);
+                statusLabel.innerHTML = 'Connection error!';
+                statusLabel.classList.add('show', 'error');
+
+                setTimeout(() => {
+                    statusLabel.classList.remove('show');
+                }, 2000);
+            });
     }
 
     // Initialize brightness on page load
@@ -161,8 +186,9 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.setItem('ledControllerState', JSON.stringify(state));
     }
 
-    // Load state from localStorage
+    // Load state from localStorage and from ESP32
     function loadState() {
+        // First check local storage
         const savedState = localStorage.getItem('ledControllerState');
         if (savedState) {
             const state = JSON.parse(savedState);
@@ -170,9 +196,30 @@ document.addEventListener('DOMContentLoaded', function () {
             brightnessSlider.value = state.brightness;
 
             // Trigger change events to update UI
-            ledToggle.dispatchEvent(new Event('change'));
-            brightnessSlider.dispatchEvent(new Event('input'));
+            ledToggle.dispatchEvent(new Event('change', { bubbles: true }));
+            brightnessSlider.dispatchEvent(new Event('input', { bubbles: true }));
         }
+
+        // Then try to fetch current state from ESP32
+        fetch('/status')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Current LED state:', data);
+                ledToggle.checked = data.state;
+                brightnessSlider.value = data.brightness;
+
+                // Trigger change events to update UI
+                ledToggle.dispatchEvent(new Event('change', { bubbles: true }));
+                brightnessSlider.dispatchEvent(new Event('input', { bubbles: true }));
+            })
+            .catch(error => {
+                console.warn('Could not fetch LED state from ESP32, using local storage instead:', error);
+            });
     }
 
     // Save state when changed
