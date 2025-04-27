@@ -1,16 +1,22 @@
+#ifndef ACCESSPOINT_H
+#define ACCESSPOINT_H
+
 #include <Arduino.h>
 #include <WiFi.h>
-#include <AsyncJson.h>
-#include <ArduinoJson.h>
+#include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
+#include <ArduinoJson.h>
 #include <Preferences.h>
 
+// WiFi credentials - modify these as needed
+#define WIFI_SSID "LED-Control"
+#define WIFI_PWD "password123"
 
-#define WIFI_SSID "LED Controller"
-#define WIFI_PWD "12345678!"
+// Function declarations
+void accessPointInit(bool debug);
+void serveHTML(bool debug);
+extern AsyncWebServer server;
+extern Preferences preferences;
 
-
-void accessPointInit (bool debug = false);
-void serveHTML(bool debug = false);
-void getData(bool debug = false);
+#endif

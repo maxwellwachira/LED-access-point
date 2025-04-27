@@ -1,27 +1,25 @@
-#include "accesspoint.h"
+#include "AccessPoint.h"
 
-// Set web server port number to 80
+// Global variables
 AsyncWebServer server(80);
-
 Preferences preferences;
 
-void handleJsonPost(AsyncWebServerRequest *request, JsonVariant &json);
-
-void accessPointInit (bool debug){
+void accessPointInit(bool debug) {
   // Connect to Wi-Fi network with SSID and password
-  if(debug) Serial.print("Setting AP (Access Point)…");
-  // Remove the password parameter, if you want the AP (Access Point) to be open
+  if(debug) Serial.print("Setting AP (Access Point)...");
+  
+  // Remove the password parameter if you want the AP to be open
   WiFi.softAP(WIFI_SSID, WIFI_PWD);
-  delay(2000); //to avoid crash on WiFi Connection
+  delay(2000); // To avoid crash on WiFi Connection
+  
   IPAddress IP = WiFi.softAPIP();
-  if(debug){
+  if(debug) {
     Serial.print("AP IP address: ");
     Serial.println(IP);
   }
-  
 }
 
-void serveHTML(bool debug){
+void serveHTML(bool debug) {
   // Initialize SPIFFS
   if (!SPIFFS.begin(true)) {
     if(debug) Serial.println("An error occurred while mounting SPIFFS");
@@ -29,7 +27,6 @@ void serveHTML(bool debug){
   }
 
   if(debug) Serial.println("SPIFFS mounted");
-
 
   // Start the server
   server.begin();
@@ -43,16 +40,12 @@ void serveHTML(bool debug){
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html", "text/html");
   });
+  
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
   });
+  
   server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/script.js", "application/javascript");
   });
-
-  AsyncCallbackJsonWebHandler *handler = new AsyncCallbackJsonWebHandler("/submit", [](AsyncWebServerRequest *request, JsonVariant &json) {
-    handleJsonPost(request, json);
-  });
-  server.addHandler(handler);
-
 }
