@@ -1,18 +1,31 @@
 #include <Arduino.h>
+#include "AccessPoint.h"
+#include "LED.h"
 
-// put function declarations here:
-int myFunction(int, int);
+void setup()
+{
+  Serial.begin(115200);
 
-void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  // Setup LED
+  setupLED();
+
+  // Load saved LED settings
+  loadLEDSettings();
+
+  // Initialize AP
+  accessPointInit(true);
+
+  // Start web server and serve HTML
+  serveHTML(true);
+
+  // Setup LED control endpoints
+  setupLEDControl();
+
+  Serial.println("System initialized");
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+void loop()
+{
+  // Nothing needed in loop for this application
+  delay(100);
 }
