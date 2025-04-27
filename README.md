@@ -49,7 +49,7 @@ Connect your LED to the ESP32 as follows:
 
 ### Default Configuration
 
-- WiFi SSID: `ESP32-LED-Control`
+- WiFi SSID: `LED-Control`
 - WiFi Password: `password123`
 - Web Interface: Connect to the WiFi network and navigate to `192.168.4.1` in your browser
 
