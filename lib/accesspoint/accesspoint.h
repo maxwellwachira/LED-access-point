@@ -7,8 +7,9 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
-#include <Preferences.h>
 #include <ArduinoJson.h>
+#include <Preferences.h>
+#include <AsyncJson.h>
 #include <functional>
 
 // WiFi credentials - modify these as needed
