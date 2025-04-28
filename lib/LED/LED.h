@@ -1,28 +1,44 @@
+// LED.h
 #ifndef LED_H
 #define LED_H
 
 #include <Arduino.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
+#include <AsyncJson.h>
 #include <ArduinoJson.h>
-#include <Preferences.h>
+#include <map>
+#include <functional>
 
-// LED pin and PWM settings
-#define LED_PIN 16 // GPIO pin connected to LED (change to your actual pin)
-#define PWM_CHANNEL 0
+// Pin definitions
+#define LED_PIN 2  // Built-in LED on most ESP32 boards
+
+// Digital pins (adjust as needed for your board)
+#define D1_PIN 13
+#define D2_PIN 12
+#define D3_PIN 14
+#define D4_PIN 27
+#define D5_PIN 26
+#define D6_PIN 25
+#define D7_PIN 33
+#define D8_PIN 32
+
+// Laser pins 
+#define LASER_12V_PIN 19
+#define LASER_5V_PIN 18
+
+// Fan pin
+#define FAN_PIN 23
+
+// PWM properties
 #define PWM_FREQUENCY 5000
-#define PWM_RESOLUTION 8 // 8-bit resolution (0-255)
+#define PWM_RESOLUTION 8  // 8-bit resolution, 0-255
 
 // Function declarations
 void setupLED();
 void updateLED();
-void handleJsonPost(AsyncWebServerRequest *request, JsonVariant &json);
-void handleLEDStatus(AsyncWebServerRequest *request);
-void setupLEDControl();
-void loadLEDSettings();
-
-// Global variables
-extern bool ledState;
-extern int brightness;
+void setupPinControlHandlers();
+void loadAllPinSettings();
+void updateDigitalPin(const String &pinId, bool state, int brightness);
+void updateLaserPin(const String &pinId, bool state, int brightness);
+void updateFanPin(const String &pinId, bool state, int brightness);
 
 #endif

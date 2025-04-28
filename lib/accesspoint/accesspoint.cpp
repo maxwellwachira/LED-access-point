@@ -48,4 +48,44 @@ void serveHTML(bool debug) {
   server.on("/script.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/script.js", "application/javascript");
   });
+  
+  // Add ping endpoint for connection checking
+  server.on("/ping", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(200, "application/json", "{\"status\":\"ok\"}");
+  });
+}
+
+// Common JSON request handler that extracts pin, state, and brightness
+void handleGenericPinRequest(AsyncWebServerRequest *request, JsonVariant &json, 
+                            std::function<void(const String&, bool, int)> callback) {
+  JsonObject jsonObj = json.as<JsonObject>();
+  
+  // Default values
+  String pinId = "";
+  bool state = false;
+  int brightness = 0;
+  
+  // Extract values from JSON
+  if (jsonObj.containsKey("pin")) {
+    pinId = jsonObj["pin"].as<String>();
+  }
+  
+  if (jsonObj.containsKey("state")) {
+    state = jsonObj["state"].as<bool>();
+  }
+  
+  if (jsonObj.containsKey("brightness")) {
+    brightness = jsonObj["brightness"].as<int>();
+    // Make sure brightness is within range
+    if (brightness < 0) brightness = 0;
+    if (brightness > 100) brightness = 100;
+  }
+  
+  // Process the pin update using the callback
+  if (pinId != "") {
+    callback(pinId, state, brightness);
+  }
+  
+  // Send response back
+  request->send(200, "application/json", "{\"success\":true}");
 }

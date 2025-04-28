@@ -1,31 +1,42 @@
-#include <Arduino.h>
-#include "accesspoint.h"
 #include "LED.h"
+#include "accesspoint.h"
+
+const bool DEBUG = true;
 
 void setup()
 {
-  Serial.begin(115200);
+  if (DEBUG)
+  {
+    // Initialize Serial for debugging
+    Serial.begin(115200);
+    delay(1000); // Give time for serial to connect
+    Serial.println("ESP32 Controller Starting...");
+  }
 
-  // Setup LED
+  // Initialize hardware components
   setupLED();
 
-  // Load saved LED settings
-  loadLEDSettings();
+  // Set up WiFi access point
+  accessPointInit(DEBUG);
 
-  // Initialize AP
-  accessPointInit(true);
+  // Set up web server
+  serveHTML(DEBUG);
 
-  // Start web server and serve HTML
-  serveHTML(true);
+  // Set up pin control handlers
+  setupPinControlHandlers();
 
-  // Setup LED control endpoints
-  setupLEDControl();
+  // Load saved settings
+  loadAllPinSettings();
 
-  Serial.println("System initialized");
+  if (DEBUG)
+    Serial.println("Setup complete!");
 }
 
 void loop()
 {
-  // Nothing needed in loop for this application
+  // Main loop is empty because we're using asynchronous web server
+  // Everything is handled by callbacks
+
+  // Add any periodic checks or updates here if needed
   delay(100);
 }
