@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "AccessPoint.h"
+#include "accesspoint.h"
 #include "LED.h"
 
 void setup()

@@ -4,65 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LED Brightness Controller</title>
+    <title>Smart Controller Panel</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
     <div class="particles" id="particles"></div>
 
-    <div class="container" id="container">
-        <div class="led-control">
-            <h1 class="title">Smart LED Control</h1>
+    <div class="main-container">
+        <h1 class="title">Smart Control</h1>
+        <!-- Main LED Control -->
+        <div id="container">
+        </div>
 
-            <div class="led-display">
-                <div class="led-rays" id="led-rays"></div>
-                <div class="led-ring"></div>
-                <div class="led-icon" id="led-icon">
-                    <!-- Sun/Light icon SVG -->
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="5"></circle>
-                        <line x1="12" y1="1" x2="12" y2="3"></line>
-                        <line x1="12" y1="21" x2="12" y2="23"></line>
-                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                        <line x1="1" y1="12" x2="3" y2="12"></line>
-                        <line x1="21" y1="12" x2="23" y2="12"></line>
-                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                    </svg>
-                </div>
-                <div class="status-label" id="status-label">
-                    <!-- Power icon using custom SVG instead of Font Awesome -->
-                    <svg class="icon-power" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
-                        <line x1="12" y1="2" x2="12" y2="12"></line>
-                    </svg>
-                    <span>LED is OFF</span>
-                </div>
-            </div>
-
-            <div class="toggle-container">
-                <span class="toggle-label">Power</span>
-                <label class="toggle">
-                    <input type="checkbox" id="led-toggle">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div class="brightness-control" id="brightness-control">
-                <div class="brightness-header">
-                    <span class="toggle-label">Brightness</span>
-                    <span class="brightness-value" id="brightness-value">50%</span>
-                </div>
-                <div class="range-container">
-                    <input type="range" min="10" max="100" value="50" class="range" id="brightness-slider">
-                    <div class="range-progress" id="range-progress" style="width: 50%;"></div>
-                </div>
-            </div>
+        <!-- Digital Output Pins Grid -->
+        <div class="pins-grid" id="pins-grid">
+            <!-- Cards will be dynamically added here -->
         </div>
     </div>
 
